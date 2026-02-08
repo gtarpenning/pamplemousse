@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pamplemousse"
-version = "0.1.2"
+version = "0.1.5"
 description = "A macOS menu bar Pomodoro timer"
 requires-python = ">=3.10"
 license = "MIT"

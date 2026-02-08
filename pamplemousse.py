@@ -414,12 +414,16 @@ class PomodoroApp(rumps.App):
         self.settings_menu[self.work_menu.title] = self.work_menu
         self.settings_menu[self.break_menu.title] = self.break_menu
 
+        self.time_left_item = rumps.MenuItem("")
+
         self.menu = [
+            self.time_left_item,
             self.start_button,
             self.stop_button,
             None,
             self.settings_menu,
         ]
+        self.time_left_item._menuitem.setHidden_(True)
 
     @staticmethod
     def _build_duration_menu(
@@ -443,8 +447,10 @@ class PomodoroApp(rumps.App):
         if self.seconds_left <= 0:
             self.timer.stop()
             self._clear_tomato_icon()
+            self.time_left_item._menuitem.setHidden_(True)
             self._start_break_overlay()
         else:
+            self.time_left_item.title = _fmt(self.seconds_left) + " remaining"
             self.title = ""
             self._update_tomato_icon()
 
@@ -503,6 +509,8 @@ class PomodoroApp(rumps.App):
         self.start_button.title = "Pause"
         self.start_button.set_callback(self.start)
         self.stop_button.set_callback(self.stop)
+        self.time_left_item.title = _fmt(self.seconds_left) + " remaining"
+        self.time_left_item._menuitem.setHidden_(False)
         self._update_tomato_icon()
         self.timer.start()
 
@@ -531,6 +539,7 @@ class PomodoroApp(rumps.App):
             g.on_dismiss = lambda: None
             g.dismiss()
         self._clear_tomato_icon()
+        self.time_left_item._menuitem.setHidden_(True)
         self.title = "🍅"
         self.state = TimerState.IDLE
         self.start_button.title = "Start"
