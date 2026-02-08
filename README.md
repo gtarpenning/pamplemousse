@@ -23,11 +23,6 @@ Starts the menu bar app in the background, installs a launch agent so it runs on
 
 Running it again while already running will prompt to stop.
 
-## Development
-
-```
-pip install -r requirements-dev.txt
-```
 
 ## License
 
