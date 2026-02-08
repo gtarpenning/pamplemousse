@@ -24,6 +24,9 @@ Starts the menu bar app in the background, installs a launch agent so it runs on
 Running it again while already running will prompt to stop.
 
 
+### Inspo
+https://losetheglasses.org/cliffgnu-vision.pdf
+
 ## License
 
 MIT
