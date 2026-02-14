@@ -10,7 +10,7 @@ publish:
 	sed -i '' "s/version = \"$$VERSION\"/version = \"$$NEW\"/" pyproject.toml; \
 	echo "$$VERSION -> $$NEW"
 	rm -rf dist
-	python -m build
-	twine upload dist/*
+	uv build
+	uv publish --token $$(awk -F' *= *' '/password/{print $$2}' ~/.pypirc)
 
 release: gist publish

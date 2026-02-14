@@ -22,6 +22,7 @@ from AppKit import (
     NSGraphicsContext,
     NSImage,
     NSScreen,
+    NSSound,
     NSTextField,
     NSView,
     NSWindow,
@@ -36,8 +37,8 @@ _CG_EVENT_KEY_DOWN = 10
 
 DEFAULT_WORK_MINS = 25
 DEFAULT_BREAK_MINS = 5
-WORK_DURATION_OPTIONS = [1, 15, 20, 25, 30, 45, 60]
-BREAK_DURATION_OPTIONS = [1, 3, 5, 10, 15, 20]
+WORK_DURATION_OPTIONS = [15, 20, 25, 30, 45, 60]
+BREAK_DURATION_OPTIONS = [1, 2, 3, 5, 10, 15]
 
 RED_OVERLAY_COLOR = (1.0, 0.0, 0.0, 0.35)
 GREEN_OVERLAY_COLOR = (0.0, 0.7, 0.0, 0.30)
@@ -180,8 +181,7 @@ class PomodoroApp(rumps.App):
     def _update_tomato_icon(self):
         fraction = self.seconds_left / self._total_work_seconds
         if self.seconds_left <= 60:
-            if self.seconds_left % 2 == 0:
-                self._blink_state = not self._blink_state
+            self._blink_state = not self._blink_state
             self._clear_tomato_icon()
             self.title = "🍅" if self._blink_state else _fmt(self.seconds_left)
             return
@@ -212,6 +212,7 @@ class PomodoroApp(rumps.App):
 
     def _on_break_complete(self) -> None:
         self._break_overlay = None
+        NSSound.soundNamed_("Glass").play()
         self.title = "✓"
         self._green_overlay = GreenOverlay(on_dismiss=self._on_green_dismissed)
         self._green_overlay.show()
@@ -418,7 +419,7 @@ class GreenOverlay:
                 _create_tint_window(screen.frame(), GREEN_OVERLAY_COLOR),
             )
 
-        self._timer_window, self._label = _create_timer_window("00:00")
+        self._timer_window, self._label = _create_timer_window("0:00")
 
         FoundationTimer.scheduledTimerWithTimeInterval_repeats_block_(
             ARM_DELAY, False, lambda _: self._arm_mouse(),
@@ -468,7 +469,7 @@ class _ButtonTarget(NSObject):
 
 def _fmt(seconds: int) -> str:
     m, s = divmod(max(seconds, 0), 60)
-    return f"{m:02d}:{s:02d}"
+    return f"{m}:{s:02d}"
 
 
 def _create_tomato_icon(fraction: float) -> NSImage:
